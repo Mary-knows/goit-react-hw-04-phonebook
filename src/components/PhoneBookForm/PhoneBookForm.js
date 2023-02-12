@@ -1,56 +1,62 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import './PhoneBookForm.css'
 
 
-class PhoneBookForm extends Component {
-    state = {
-        name: '',
-        number: '',
-    };
+const PhoneBookForm = ({ onSubmit }) => {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
 
-    NameId = nanoid();
-    NumberId = nanoid();
-    
+    let NameId = nanoid();
+    let NumberId = nanoid();
 
-    handleInputChange = e => {
+    const handleInputChange = e => {
         const { name, value } = e.currentTarget;
-        this.setState({ [name]: value });
+        switch (name) {
+            case 'name':
+                setName(value);
+                break;
+
+            case 'number':
+                setNumber(value);
+                break;
+
+            default:
+                break;
+        }
     };
-    
-    handleSubmit = e => {
+
+    const handleSubmit = e => {
         e.preventDefault();
 
-        this.props.onSubmit(this.state);
-        this.reset();
+        onSubmit({ name, number });
+        reset();
     };
 
-    reset = () => {
-        this.setState({ name: '', number: '' });
+    const reset = () => {
+        setName('');
+        setNumber('');
     };
 
-
-    render() {
-        const { name } = this.state;
-
-        return <form onSubmit={this.handleSubmit} className='PhoneBookForm'>
-            <label htmlFor={this.NameId} className='PhoneBookForm__name'> Name
+    return <form onSubmit={handleSubmit} className='PhoneBookForm'>
+            <label htmlFor={NameId} className='PhoneBookForm__name'> Name
                 <input className='PhoneBookForm__input'
-                    id={this.NameId}
+                    id={NameId}
                     type="text"
                     value={name}
-                    onChange={this.handleInputChange}
+                    onChange={handleInputChange}
                     name='name'
                     pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                     title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                     required />
             </label>
-            <label htmlFor={this.NumberId} className='PhoneBookForm__name'> Number
+            <label htmlFor={NumberId} className='PhoneBookForm__name'> Number
                 <input className='PhoneBookForm__input'
-                    id={this.NumberId}
-                    value={this.state.number}
-                    onChange={this.handleInputChange}
+                    id={NumberId}
+                    value={number}
+                    onChange={handleInputChange}
                     type="tel"
                     name="number"
                     pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -60,7 +66,6 @@ class PhoneBookForm extends Component {
             </label>
             <button type='submit' className='PhoneBookForm__btn'>Add contact</button>
         </form>
-    }
 }
 
 PhoneBookForm.propTypes = {
